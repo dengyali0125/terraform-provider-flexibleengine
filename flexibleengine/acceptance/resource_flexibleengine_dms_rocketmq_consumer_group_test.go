@@ -8,10 +8,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 
-	"github.com/chnsz/golangsdk"
 	"github.com/huaweicloud/terraform-provider-huaweicloud/huaweicloud/config"
 	"github.com/huaweicloud/terraform-provider-huaweicloud/huaweicloud/services/acceptance"
 	"github.com/huaweicloud/terraform-provider-huaweicloud/huaweicloud/utils"
+
+	"github.com/chnsz/golangsdk"
 )
 
 func getDmsRocketMQConsumerGroupResourceFunc(config *config.Config, state *terraform.ResourceState) (interface{}, error) {
@@ -75,6 +76,7 @@ func TestAccDmsRocketMQConsumerGroup_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "name", rName),
 					resource.TestCheckResourceAttr(resourceName, "broadcast", "true"),
 					resource.TestCheckResourceAttr(resourceName, "retry_max_times", "3"),
+					resource.TestCheckResourceAttr(resourceName, "description", "add description."),
 				),
 			},
 			{
@@ -85,6 +87,7 @@ func TestAccDmsRocketMQConsumerGroup_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "broadcast", "false"),
 					resource.TestCheckResourceAttr(resourceName, "retry_max_times", "5"),
 					resource.TestCheckResourceAttr(resourceName, "enabled", "false"),
+					resource.TestCheckResourceAttr(resourceName, "description", ""),
 				),
 			},
 			{
@@ -147,6 +150,7 @@ resource "flexibleengine_dms_rocketmq_consumer_group" "test" {
   ]
   name            = "%s"
   retry_max_times = "3"
+  description     = "add description."
 }
 `, testAccDmsRocketmqConsumerGroup_Base(name), name)
 }
@@ -164,6 +168,7 @@ resource "flexibleengine_dms_rocketmq_consumer_group" "test" {
   name            = "%s"
   retry_max_times = "5"
   enabled         = false
+  description     = ""
 }
 `, testAccDmsRocketmqConsumerGroup_Base(name), name)
 }

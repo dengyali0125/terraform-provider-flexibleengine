@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/chnsz/golangsdk/openstack/dli/v1/databases"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/huaweicloud/terraform-provider-huaweicloud/huaweicloud/config"
 	"github.com/huaweicloud/terraform-provider-huaweicloud/huaweicloud/services/acceptance"
 	"github.com/huaweicloud/terraform-provider-huaweicloud/huaweicloud/services/dli"
+
+	"github.com/chnsz/golangsdk/openstack/dli/v1/databases"
 )
 
 func getDatabaseResourceFunc(conf *config.Config, state *terraform.ResourceState) (interface{}, error) {
@@ -18,7 +19,7 @@ func getDatabaseResourceFunc(conf *config.Config, state *terraform.ResourceState
 		return nil, fmt.Errorf("error creating Flexibleengine DLI v1 client: %s", err)
 	}
 
-	return dli.GetDliSqlDatabaseByName(c, state.Primary.ID)
+	return dli.GetDliSQLDatabaseByName(c, state.Primary.ID)
 }
 
 func TestAccDliDatabase_basic(t *testing.T) {

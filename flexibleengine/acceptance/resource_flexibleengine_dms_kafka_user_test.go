@@ -8,9 +8,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/kafka/v2/model"
 	"github.com/huaweicloud/terraform-provider-huaweicloud/huaweicloud/config"
 	"github.com/huaweicloud/terraform-provider-huaweicloud/huaweicloud/services/acceptance"
+
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/kafka/v2/model"
 )
 
 func getDmsKafkaUserFunc(c *config.Config, state *terraform.ResourceState) (interface{}, error) {
@@ -54,6 +55,8 @@ func TestAccDmsKafkaUser_basic(t *testing.T) {
 	resourceName := "flexibleengine_dms_kafka_user.test"
 	password := acceptance.RandomPassword()
 	passwordUpdate := password + "update"
+	description := "kafka test"
+	descriptionUpdate := description + "update"
 
 	rc := acceptance.InitResourceCheck(
 		resourceName,
@@ -67,17 +70,19 @@ func TestAccDmsKafkaUser_basic(t *testing.T) {
 		CheckDestroy:      rc.CheckResourceDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDmsKafkaUser_basic(rName, password),
+				Config: testAccDmsKafkaUser_basic(rName, password, description),
 				Check: resource.ComposeTestCheckFunc(
 					rc.CheckResourceExists(),
 					resource.TestCheckResourceAttr(resourceName, "name", rName),
+					resource.TestCheckResourceAttr(resourceName, "description", description),
 				),
 			},
 			{
-				Config: testAccDmsKafkaUser_basic(rName, passwordUpdate),
+				Config: testAccDmsKafkaUser_basic(rName, passwordUpdate, descriptionUpdate),
 				Check: resource.ComposeTestCheckFunc(
 					rc.CheckResourceExists(),
 					resource.TestCheckResourceAttr(resourceName, "name", rName),
+					resource.TestCheckResourceAttr(resourceName, "description", descriptionUpdate),
 				),
 			},
 			{
@@ -93,6 +98,7 @@ func TestAccDmsKafkaUser_basic(t *testing.T) {
 func testAccDmsKafkaInstance_base(resName string) string {
 	return fmt.Sprintf(`
 data "flexibleengine_dms_product" "product_1" {
+  engine    = "kafka"
   bandwidth = "300MB"
 }
 
@@ -120,6 +126,7 @@ func testAccDmsKafkaInstance_basic(resName string) string {
 
 resource "flexibleengine_dms_kafka_instance" "instance_1" {
   name               = "%s"
+  description        = "kafka test"
   manager_user       = "admin"
   manager_password   = "Dmstest@123"
   access_user        = "user"
@@ -149,14 +156,15 @@ resource "flexibleengine_dms_kafka_topic" "topic" {
 `, testAccDmsKafkaInstance_basic(rName), rName)
 }
 
-func testAccDmsKafkaUser_basic(rName, password string) string {
+func testAccDmsKafkaUser_basic(rName, password string, description string) string {
 	return fmt.Sprintf(`
-%s
+%[1]s
 
 resource "flexibleengine_dms_kafka_user" "test" {
   instance_id = flexibleengine_dms_kafka_instance.instance_1.id
-  name        = "%s"
-  password    = "%s"
+  name        = "%[2]s"
+  password    = "%[3]s"
+  description = "%[4]s"
 }
-`, testAccDmsKafkaTopic_basic(rName), rName, password)
+`, testAccDmsKafkaTopic_basic(rName), rName, password, description)
 }

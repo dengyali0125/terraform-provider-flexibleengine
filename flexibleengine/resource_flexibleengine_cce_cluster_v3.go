@@ -6,11 +6,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 	"github.com/chnsz/golangsdk"
 	"github.com/chnsz/golangsdk/openstack/cce/v3/clusters"
 	"github.com/chnsz/golangsdk/openstack/networking/v1/eips"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceCCEClusterV3() *schema.Resource {
@@ -409,7 +410,8 @@ func resourceCCEClusterV3Read(d *schema.ResourceData, meta interface{}) error {
 	d.Set("security_group_id", n.Spec.HostNetwork.SecurityGroup)
 	d.Set("custom_san", n.Spec.CustomSan)
 
-	cert, err := clusters.GetCert(cceClient, d.Id()).Extract()
+	opts := clusters.GetCertOpts{Duration: -1}
+	cert, err := clusters.GetCert(cceClient, d.Id(), opts).Extract()
 	if err != nil {
 		log.Printf("Error retrieving flexibleengine CCE cluster cert: %s", err)
 	}

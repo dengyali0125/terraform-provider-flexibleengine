@@ -571,9 +571,9 @@ func Provider() *schema.Provider {
 			"flexibleengine_apig_throttling_policy_associate": apig.ResourceThrottlingPolicyAssociate(),
 			"flexibleengine_apig_throttling_policy":           apig.ResourceApigThrottlingPolicyV2(),
 
-			"flexibleengine_api_gateway_api":         huaweicloud.ResourceAPIGatewayAPI(),
+			"flexibleengine_api_gateway_api":         apigateway.ResourceAPI(),
 			"flexibleengine_api_gateway_environment": apigateway.ResourceEnvironment(),
-			"flexibleengine_api_gateway_group":       huaweicloud.ResourceAPIGatewayGroup(),
+			"flexibleengine_api_gateway_group":       apigateway.ResourceGroup(),
 
 			"flexibleengine_as_instance_attach": as.ResourceASInstanceAttach(),
 			"flexibleengine_as_notification":    as.ResourceAsNotification(),
